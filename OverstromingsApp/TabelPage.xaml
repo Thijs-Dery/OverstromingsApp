@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OverstromingsApp.TabelPage"
+             Title="Aquafin"
+             BackgroundColor="White"
+             Padding="20">
+
+    <Grid RowSpacing="10" ColumnSpacing="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Logo -->
+        <Image Source="aquafin.png" HeightRequest="40" HorizontalOptions="Start" Grid.Row="0" />
+
+        <!-- Legenda -->
+        <StackLayout Orientation="Horizontal" Spacing="10" VerticalOptions="Center" Grid.Row="0" Margin="150,0,0,0">
+            <Label Text="Overstromingsgevaar:" FontAttributes="Bold" VerticalOptions="Center" />
+            <StackLayout Orientation="Horizontal" Spacing="5">
+                <BoxView WidthRequest="15" HeightRequest="15" Color="Green" />
+                <Label Text="Nee" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" Spacing="5">
+                <BoxView WidthRequest="15" HeightRequest="15" Color="Yellow" />
+                <Label Text="Marginaal" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" Spacing="5">
+                <BoxView WidthRequest="15" HeightRequest="15" Color="Red" />
+                <Label Text="Ja" />
+            </StackLayout>
+        </StackLayout>
+
+        <!-- Bovenste knoppen -->
+        <StackLayout Orientation="Horizontal" HorizontalOptions="End" Spacing="10" Grid.Row="1">
+            <Button Text="Filter" WidthRequest="80" Clicked="OnFilterClicked"/>
+            <Button Text="Admin" WidthRequest="80" Clicked="OnAdminClicked"/>
+            <Button Text="Toevoegen" WidthRequest="100"/>
+            <Button Text="User" WidthRequest="80" Clicked="OnUserClicked"/>
+             
+        </StackLayout>
+
+        <!-- Tabel -->
+        <ScrollView Orientation="Both" Grid.Row="2" Margin="0,10,0,0">
+            <Grid x:Name="TableGrid" BackgroundColor="#EEE" Padding="5" RowSpacing="5" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Kolomkoppen -->
+                <Label Grid.Row="0" Grid.Column="0" Text="Jaar" FontAttributes="Bold" BackgroundColor="#DDD" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="0" Grid.Column="1" Text="Dec" FontAttributes="Bold" BackgroundColor="#DDD" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="0" Grid.Column="2" Text="Jan" FontAttributes="Bold" BackgroundColor="#DDD" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="0" Grid.Column="3" Text="Feb" FontAttributes="Bold" BackgroundColor="#DDD" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="0" Grid.Column="4" Text="Mrt" FontAttributes="Bold" BackgroundColor="#DDD" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="0" Grid.Column="5" Text="Apr" FontAttributes="Bold" BackgroundColor="#DDD" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="0" Grid.Column="6" Text="Mei" FontAttributes="Bold" BackgroundColor="#DDD" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="0" Grid.Column="7" Text="Jun" FontAttributes="Bold" BackgroundColor="#DDD" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="0" Grid.Column="8" Text="Jul" FontAttributes="Bold" BackgroundColor="#DDD" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="0" Grid.Column="9" Text="Aug" FontAttributes="Bold" BackgroundColor="#DDD" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="0" Grid.Column="10" Text="Sep" FontAttributes="Bold" BackgroundColor="#DDD" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="0" Grid.Column="11" Text="Okt" FontAttributes="Bold" BackgroundColor="#DDD" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="0" Grid.Column="12" Text="Nov" FontAttributes="Bold" BackgroundColor="#DDD" HorizontalTextAlignment="Center" />
+            </Grid>
+        </ScrollView>
+    </Grid>
+</ContentPage>
