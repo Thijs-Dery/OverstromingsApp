@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OverstromingsApp.Views.LoginPage"
+             Title="Login"
+             Padding="30">
+
+    <VerticalStackLayout Spacing="20" VerticalOptions="Center">
+        <Image Source="aquafin.png" HeightRequest="100" HorizontalOptions="Center" />
+
+        <Entry x:Name="emailEntry"
+               Placeholder="E-mail"
+               Keyboard="Email"
+               HorizontalOptions="Fill" />
+
+        <Entry x:Name="passwordEntry"
+               Placeholder="Wachtwoord"
+               IsPassword="True"
+               HorizontalOptions="Fill" />
+
+        <Button Text="Inloggen"
+                Clicked="OnLoginClicked"
+                HorizontalOptions="Fill" />
+
+        <Label Text="Wachtwoord vergeten?"
+               TextDecorations="Underline"
+               HorizontalOptions="Center"
+               TextColor="Blue">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnForgotPasswordTapped" />
+            </Label.GestureRecognizers>
+        </Label>
+    </VerticalStackLayout>
+
+</ContentPage>

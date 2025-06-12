@@ -1,28 +1,33 @@
 ﻿using OverstromingsApp.Data;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace OverstromingsApp
+namespace OverstromingsApp;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    public static IServiceProvider Services { get; private set; } = null!;
+
+    public App(IServiceProvider serviceProvider)
     {
-        public App(AppDbContext context)
-        {
-            InitializeComponent();
-            MainPage = new AppShell();
+        InitializeComponent();
+        Services = serviceProvider;
 
-            _ = SeedDatabaseAsync(context);
+        var context = Services.GetRequiredService<AppDbContext>();
+        _ = SeedDatabaseAsync(context);
+
+        MainPage = new AppShell();
+    }
+
+    private async Task SeedDatabaseAsync(AppDbContext context)
+    {
+        try
+        {
+            await Seeder.SeedAsync(context);
+            System.Diagnostics.Debug.WriteLine("Database seeded.");
         }
-
-        private async Task SeedDatabaseAsync(AppDbContext context)
+        catch (Exception ex)
         {
-            try
-            {
-                await Seeder.SeedAsync(context);
-                System.Diagnostics.Debug.WriteLine("Database seeded.");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Seeding failed: {ex.Message}");
-            }
+            System.Diagnostics.Debug.WriteLine($"Seeding failed: {ex.Message}");
         }
     }
 }

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OverstromingsApp.Views.TabelPage"
+             Title="Aquafin"
+             Padding="20">
+
+    <Grid RowSpacing="10" ColumnSpacing="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Logo -->
+        <Image Source="aquafin.png" HeightRequest="40" HorizontalOptions="Start" Grid.Row="0" />
+
+        <!-- Legenda -->
+        <StackLayout Orientation="Horizontal" Spacing="10" VerticalOptions="Center" Grid.Row="0" Margin="150,0,0,0">
+            <Label Text="Overstromingsgevaar:" FontAttributes="Bold" VerticalOptions="Center" />
+            <StackLayout Orientation="Horizontal" Spacing="5">
+                <BoxView WidthRequest="15" HeightRequest="15" Color="Green" />
+                <Label Text="Nee" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" Spacing="5">
+                <BoxView WidthRequest="15" HeightRequest="15" Color="Yellow" />
+                <Label Text="Marginaal" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" Spacing="5">
+                <BoxView WidthRequest="15" HeightRequest="15" Color="Red" />
+                <Label Text="Ja" />
+            </StackLayout>
+        </StackLayout>
+
+        <!-- Scrollable Table -->
+        <ScrollView Grid.Row="2">
+            <Grid x:Name="TableGrid" ColumnSpacing="2" RowSpacing="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Header -->
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <!-- Jaar -->
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Koprij met seizoenen -->
+                <Label Text="Jaar" FontAttributes="Bold" Padding="5"
+           HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="0" />
+                <Label Text="Winter" FontAttributes="Bold" Padding="5"
+           HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="1" />
+                <Label Text="Lente" FontAttributes="Bold" Padding="5"
+           HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="2" />
+                <Label Text="Zomer" FontAttributes="Bold" Padding="5"
+           HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="3" />
+                <Label Text="Herfst" FontAttributes="Bold" Padding="5"
+           HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="4" />
+            </Grid>
+
+        </ScrollView>
+
+        <!-- Navigatie -->
+        <StackLayout Grid.Row="3" Orientation="Horizontal" HorizontalOptions="Center" Spacing="20">
+            <Button Text="Filter" Clicked="OnFilterClicked"/>
+            <Button Text="Admin" Clicked="OnAdminClicked"/>
+            <Button Text="Uitloggen" Clicked="OnUserClicked"/>
+        </StackLayout>
+
+    </Grid>
+</ContentPage>
