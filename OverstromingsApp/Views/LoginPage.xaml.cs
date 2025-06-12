@@ -1,7 +1,6 @@
 ﻿using Microsoft.Maui.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using OverstromingsApp.Data;
-using OverstromingsApp.Views;
 
 namespace OverstromingsApp.Views;
 
@@ -17,7 +16,7 @@ public partial class LoginPage : ContentPage
         var dbContext = App.Services.GetService<AppDbContext>();
         if (dbContext is not null)
         {
-            await Navigation.PushAsync(new TabelPage(dbContext));
+            await Shell.Current.GoToAsync("///TabelPage");
         }
         else
         {
@@ -27,6 +26,6 @@ public partial class LoginPage : ContentPage
 
     private async void OnForgotPasswordTapped(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new ForgotPasswordPage());
+        await Shell.Current.GoToAsync("ForgotPasswordPage");
     }
 }

@@ -8,68 +8,113 @@
     <Grid RowSpacing="10" ColumnSpacing="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <!-- Logo en Legenda -->
             <RowDefinition Height="Auto"/>
+            <!-- Header -->
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <!-- Scrollbare data -->
         </Grid.RowDefinitions>
 
-        <!-- Logo -->
-        <Image Source="aquafin.png" HeightRequest="40" HorizontalOptions="Start" Grid.Row="0" />
+        <!-- Logo en Legenda -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <!-- Legenda -->
-        <StackLayout Orientation="Horizontal" Spacing="10" VerticalOptions="Center" Grid.Row="0" Margin="150,0,0,0">
-            <Label Text="Overstromingsgevaar:" FontAttributes="Bold" VerticalOptions="Center" />
-            <StackLayout Orientation="Horizontal" Spacing="5">
+            <Image Source="aquafin.png"
+                   HeightRequest="40"
+                   HorizontalOptions="Start" />
+
+            <StackLayout Grid.Column="1"
+                         Orientation="Horizontal"
+                         Spacing="10"
+                         VerticalOptions="Center">
+                <Label Text="Overstromingsgevaar:"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center" />
                 <BoxView WidthRequest="15" HeightRequest="15" Color="Green" />
                 <Label Text="Nee" />
-            </StackLayout>
-            <StackLayout Orientation="Horizontal" Spacing="5">
                 <BoxView WidthRequest="15" HeightRequest="15" Color="Yellow" />
                 <Label Text="Marginaal" />
-            </StackLayout>
-            <StackLayout Orientation="Horizontal" Spacing="5">
                 <BoxView WidthRequest="15" HeightRequest="15" Color="Red" />
                 <Label Text="Ja" />
             </StackLayout>
-        </StackLayout>
+        </Grid>
 
-        <!-- Scrollable Table -->
+        <!-- Tabel Header -->
+        <Grid Grid.Row="1"
+      ColumnSpacing="2"
+      BackgroundColor="Gray"
+      Padding="2"
+      x:Name="HeaderGrid"
+      HorizontalOptions="FillAndExpand">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Jaar"
+           Grid.Column="0"
+           HorizontalOptions="Center"
+           HorizontalTextAlignment="Center"
+           VerticalTextAlignment="Center"
+           FontAttributes="Bold"
+           TextColor="White"
+           Padding="5" />
+
+            <Label Text="Winter"
+           Grid.Column="1"
+           HorizontalOptions="Center"
+           HorizontalTextAlignment="Center"
+           VerticalTextAlignment="Center"
+           FontAttributes="Bold"
+           TextColor="White"
+           Padding="5" />
+
+            <Label Text="Lente"
+           Grid.Column="2"
+           HorizontalOptions="Center"
+           HorizontalTextAlignment="Center"
+           VerticalTextAlignment="Center"
+           FontAttributes="Bold"
+           TextColor="White"
+           Padding="5" />
+
+            <Label Text="Zomer"
+           Grid.Column="3"
+           HorizontalOptions="Center"
+           HorizontalTextAlignment="Center"
+           VerticalTextAlignment="Center"
+           FontAttributes="Bold"
+           TextColor="White"
+           Padding="5" />
+
+            <Label Text="Herfst"
+           Grid.Column="4"
+           HorizontalOptions="Center"
+           HorizontalTextAlignment="Center"
+           VerticalTextAlignment="Center"
+           FontAttributes="Bold"
+           TextColor="White"
+           Padding="5" />
+        </Grid>
+
+
+        <!-- Scrollbare data -->
         <ScrollView Grid.Row="2">
-            <Grid x:Name="TableGrid" ColumnSpacing="2" RowSpacing="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <!-- Header -->
-                </Grid.RowDefinitions>
+            <Grid x:Name="TableGrid" ColumnSpacing="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50" />
-                    <!-- Jaar -->
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-
-                <!-- Koprij met seizoenen -->
-                <Label Text="Jaar" FontAttributes="Bold" Padding="5"
-           HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="0" />
-                <Label Text="Winter" FontAttributes="Bold" Padding="5"
-           HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="1" />
-                <Label Text="Lente" FontAttributes="Bold" Padding="5"
-           HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="2" />
-                <Label Text="Zomer" FontAttributes="Bold" Padding="5"
-           HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="3" />
-                <Label Text="Herfst" FontAttributes="Bold" Padding="5"
-           HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="4" />
             </Grid>
-
         </ScrollView>
-
-        <!-- Navigatie -->
-        <StackLayout Grid.Row="3" Orientation="Horizontal" HorizontalOptions="Center" Spacing="20">
-            <Button Text="Filter" Clicked="OnFilterClicked"/>
-            <Button Text="Admin" Clicked="OnAdminClicked"/>
-            <Button Text="Uitloggen" Clicked="OnUserClicked"/>
-        </StackLayout>
-
     </Grid>
 </ContentPage>

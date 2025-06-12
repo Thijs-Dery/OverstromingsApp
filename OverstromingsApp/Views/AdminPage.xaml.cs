@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Maui.Controls;
 
-namespace OverstromingsApp;
+namespace OverstromingsApp.Views;
 
 public partial class AdminPage : ContentPage
 {
@@ -41,7 +41,7 @@ public partial class AdminPage : ContentPage
                 HorizontalTextAlignment = TextAlignment.Center
             };
 
-            var deleteBtn = new Button { Text = "❌", WidthRequest = 40 };
+            var deleteBtn = new Button { Text = "X", WidthRequest = 40 };
             deleteBtn.Clicked += (s, e) =>
             {
                 users.Remove(user);
@@ -59,7 +59,7 @@ public partial class AdminPage : ContentPage
                 var tapGesture = new TapGestureRecognizer();
                 tapGesture.Tapped += async (s, e) =>
                 {
-                    await Navigation.PushAsync(new AdminPage());
+                    await Shell.Current.GoToAsync("AdminPage");
                 };
                 roleLabel.GestureRecognizers.Add(tapGesture);
             }
@@ -82,4 +82,3 @@ public partial class AdminPage : ContentPage
         }
     }
 }
-

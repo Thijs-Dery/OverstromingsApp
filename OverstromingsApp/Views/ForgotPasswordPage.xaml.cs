@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Maui.Controls;
 
-namespace OverstromingsApp;
+namespace OverstromingsApp.Views;
 
 public partial class ForgotPasswordPage : ContentPage
 {
@@ -23,14 +19,11 @@ public partial class ForgotPasswordPage : ContentPage
             return;
         }
 
-        // Hier zou je logica kunnen toevoegen om de aanvraag door te sturen
         await DisplayAlert("Verzonden", $"Er is een aanvraag verstuurd naar {email}", "OK");
     }
 
     private async void OnBackToLoginClicked(object sender, EventArgs e)
     {
-        await Navigation.PopAsync(); // Gaat terug naar de loginpagina
+        await Shell.Current.GoToAsync("LoginPage");
     }
 }
-
-

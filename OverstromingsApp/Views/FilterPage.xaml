@@ -1,68 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OverstromingsApp.FilterPage"
-             Title="Filter Pagina">
+<ContentPage
+    x:Class="OverstromingsApp.Views.FilterPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Filter">
 
-    <Grid RowDefinitions="Auto,*" ColumnDefinitions="Auto,*">
-        <!-- Bovenste navigatie -->
-        <Grid Grid.Row="0" Grid.ColumnSpan="2" Padding="20" ColumnSpacing="10" VerticalOptions="Start">
+    <ScrollView>
+        <Grid x:Name="TableGrid"
+              RowSpacing="2"
+              ColumnSpacing="2"
+              Padding="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
-            <Image Source="aquafin_logo.png" HeightRequest="40" />
-
-            <Button Grid.Column="1" Text="Terugkeren" />
-            <Button Grid.Column="2" Text="Admin" />
-            <Button Grid.Column="3" Text="User" />
         </Grid>
-
-        <!-- Linker filtersectie -->
-        <StackLayout Grid.Row="1" Grid.Column="0" Padding="20" WidthRequest="250" Spacing="20">
-            <Label Text="Filter:" FontAttributes="Bold" />
-
-            <Picker Title="Maand">
-                <!-- Vul maanden in -->
-            </Picker>
-
-            <Picker Title="Jaartal">
-                <!-- Vul jaartallen in -->
-            </Picker>
-
-            <StackLayout>
-                <Label Text="Hoeveelheid neerslag: Tussen: xx en: xx" FontSize="Small" />
-                <Slider Minimum="0" Maximum="200" />
-                <Slider Minimum="0" Maximum="200" />
-            </StackLayout>
-
-            <Label Text="Neerslag: ↓ (afdalend)" />
-            <Label Text="Risico: ↑ (stijgend)" />
-
-            <Picker Title="Seizoen">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Winter</x:String>
-                        <x:String>Lente</x:String>
-                        <x:String>Zomer</x:String>
-                        <x:String>Herfst</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
-        </StackLayout>
-
-        <!-- Rechter gegevensoverzicht -->
-        <ScrollView Grid.Row="1" Grid.Column="1" Padding="20">
-            <Grid x:Name="TableGrid" ColumnSpacing="10" RowSpacing="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-            </Grid>
-        </ScrollView>
-    </Grid>
+    </ScrollView>
 </ContentPage>

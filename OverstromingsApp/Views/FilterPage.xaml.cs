@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Maui.Controls;
 
-namespace OverstromingsApp;
+namespace OverstromingsApp.Views;
 
 public partial class FilterPage : ContentPage
 {
@@ -25,14 +25,12 @@ public partial class FilterPage : ContentPage
 
         int row = 0;
 
-        // Header
         TableGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         AddToGrid(CreateCell("Jaar", true), 0, row);
         AddToGrid(CreateCell("Maand", true), 1, row);
         AddToGrid(CreateCell("Neerslag", true), 2, row);
         row++;
 
-        // Gegevens
         foreach (var item in data)
         {
             TableGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -71,6 +69,3 @@ public partial class FilterPage : ContentPage
         public int Neerslag { get; set; }
     }
 }
-
-
-

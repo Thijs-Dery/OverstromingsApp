@@ -6,7 +6,6 @@ using Microsoft.Maui.Controls;
 using Microsoft.EntityFrameworkCore;
 using OverstromingsApp.Data;
 using OverstromingsApp.Models;
-using OverstromingsApp.Views;
 
 namespace OverstromingsApp.Views;
 
@@ -70,14 +69,17 @@ public partial class TabelPage : ContentPage
     private void BuildSeasonTable(Dictionary<int, JaarSeizoensGegevens> data)
     {
         var thresholds = new Dictionary<string, int>
-        {
-            {"Winter", 300},
-            {"Lente", 250},
-            {"Zomer", 260},
-            {"Herfst", 280}
-        };
+    {
+        { "Winter", 300 },
+        { "Lente", 250 },
+        { "Zomer", 260 },
+        { "Herfst", 280 }
+    };
 
-        int rowIndex = 1;
+        TableGrid.RowDefinitions.Clear();
+        TableGrid.Children.Clear();
+
+        int rowIndex = 0;
 
         foreach (var year in data.OrderBy(y => y.Key))
         {
@@ -86,10 +88,13 @@ public partial class TabelPage : ContentPage
             var yearLabel = new Label
             {
                 Text = year.Key.ToString(),
+                FontAttributes = FontAttributes.Bold,
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center,
-                FontAttributes = FontAttributes.Bold,
-                Padding = 5
+                Padding = 5,
+                Margin = new Thickness(1),
+                BackgroundColor = Colors.Transparent,
+                TextColor = Colors.White
             };
             Grid.SetRow(yearLabel, rowIndex);
             Grid.SetColumn(yearLabel, 0);
@@ -99,8 +104,8 @@ public partial class TabelPage : ContentPage
 
             for (int i = 0; i < seasons.Length; i++)
             {
-                string season = seasons[i];
-                List<DataModel> list = season switch
+                var season = seasons[i];
+                var list = season switch
                 {
                     "Winter" => data[year.Key].Winter,
                     "Lente" => data[year.Key].Lente,
@@ -111,51 +116,33 @@ public partial class TabelPage : ContentPage
 
                 int totaal = list.Sum(m => m.NeerslagMM);
 
-                var label = new Label
+                var cell = new Label
                 {
                     Text = totaal.ToString(),
                     HorizontalTextAlignment = TextAlignment.Center,
                     VerticalTextAlignment = TextAlignment.Center,
+                    Padding = 5,
+                    Margin = new Thickness(1),
                     BackgroundColor = GetSeasonColor(season, totaal, thresholds[season]),
-                    Padding = 5
+                    TextColor = Colors.White
                 };
 
-                Grid.SetRow(label, rowIndex);
-                Grid.SetColumn(label, i + 1);
-                TableGrid.Children.Add(label);
+                Grid.SetRow(cell, rowIndex);
+                Grid.SetColumn(cell, i + 1);
+                TableGrid.Children.Add(cell);
             }
 
             rowIndex++;
         }
     }
 
+
     private Color GetSeasonColor(string season, int totaal, int grens)
     {
-        int verschil = totaal - grens;
-
-        if (verschil > 10)
+        if (totaal >= grens + 10)
             return Colors.Red;
-        if (verschil > 0)
+        if (totaal >= grens)
             return Colors.Yellow;
         return Colors.Green;
-    }
-
-    private async void OnFilterClicked(object sender, EventArgs e)
-    {
-        await Navigation.PushAsync(new FilterPage());
-    }
-
-    private async void OnAdminClicked(object sender, EventArgs e)
-    {
-        await Navigation.PushAsync(new AdminPage());
-    }
-
-    private async void OnUserClicked(object sender, EventArgs e)
-    {
-        bool confirm = await DisplayAlert("Uitloggen", "Ben je zeker dat je wilt uitloggen?", "Ja", "Nee");
-        if (confirm)
-        {
-            Application.Current.MainPage = new NavigationPage(new LoginPage());
-        }
     }
 }
