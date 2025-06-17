@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using OverstromingsApp.Data;
 using OverstromingsApp.Views;
@@ -13,13 +12,7 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
 
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets<App>()
-            .Build();
-
-        var connectionString = config.GetConnectionString("DefaultConnection")
-            ?? config["DbConnectionString"]
-            ?? throw new InvalidOperationException("Geen geldige connection string gevonden.");
+        var connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=OverstromingsDb;Trusted_Connection=True;";
 
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
