@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OverstromingsApp.Migrations\OverstromingsApp.Migrations.csproj" />
     <ProjectReference Include="..\OverstromingsApp.Core\OverstromingsApp.Core.csproj" />
   </ItemGroup>
 

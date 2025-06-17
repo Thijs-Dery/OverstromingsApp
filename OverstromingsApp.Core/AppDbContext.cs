@@ -1,16 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using OverstromingsApp.Core.Models;
 
-namespace OverstromingsApp.Core;
-
-public class AppDbContext : DbContext
+namespace OverstromingsApp.Core
 {
-    public DbSet<DataModel> Neerslag { get; set; }
-
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public class AppDbContext : DbContext
     {
-        modelBuilder.Entity<DataModel>().HasKey(x => new { x.Jaar, x.Maand });
+        public DbSet<DataModel> Neerslag { get; set; }
+
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DataModel>().HasKey(x => new { x.Jaar, x.Maand });
+        }
     }
 }
