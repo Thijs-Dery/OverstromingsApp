@@ -1,5 +1,5 @@
-﻿using OverstromingsApp.Data;
-using OverstromingsApp.Models;
+﻿using OverstromingsApp.Core;
+using OverstromingsApp.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace OverstromingsApp.Controllers;

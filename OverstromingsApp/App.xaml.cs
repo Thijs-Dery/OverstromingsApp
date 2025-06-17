@@ -1,4 +1,4 @@
-﻿using OverstromingsApp.Data;
+﻿using OverstromingsApp.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace OverstromingsApp;

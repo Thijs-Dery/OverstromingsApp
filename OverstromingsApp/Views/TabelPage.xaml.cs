@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Maui.Controls;
+using OverstromingsApp.Core;
+using OverstromingsApp.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Maui.Controls;
-using Microsoft.EntityFrameworkCore;
-using OverstromingsApp.Data;
-using OverstromingsApp.Models;
 
 namespace OverstromingsApp.Views;
 
@@ -69,12 +69,12 @@ public partial class TabelPage : ContentPage
     private void BuildSeasonTable(Dictionary<int, JaarSeizoensGegevens> data)
     {
         var thresholds = new Dictionary<string, int>
-    {
-        { "Winter", 300 },
-        { "Lente", 250 },
-        { "Zomer", 260 },
-        { "Herfst", 280 }
-    };
+        {
+            { "Winter", 300 },
+            { "Lente", 250 },
+            { "Zomer", 260 },
+            { "Herfst", 280 }
+        };
 
         TableGrid.RowDefinitions.Clear();
         TableGrid.Children.Clear();
@@ -135,7 +135,6 @@ public partial class TabelPage : ContentPage
             rowIndex++;
         }
     }
-
 
     private Color GetSeasonColor(string season, int totaal, int grens)
     {

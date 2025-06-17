@@ -1,6 +1,6 @@
 ﻿using Microsoft.Maui.Controls;
 using Microsoft.Extensions.DependencyInjection;
-using OverstromingsApp.Data;
+using OverstromingsApp.Core;
 
 namespace OverstromingsApp.Views;
 
