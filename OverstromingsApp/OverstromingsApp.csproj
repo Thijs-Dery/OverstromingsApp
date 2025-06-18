@@ -14,17 +14,23 @@
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <ApplicationVersion>1</ApplicationVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Platforms\Windows\Assets\dummy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Platforms\Windows\Assets\dummy.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <!-- EF Core tooling **moet** in het start-project aanwezig zijn -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design"
-                      Version="8.0.6"
-                      PrivateAssets="all" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6" PrivateAssets="all" />
 
     <!-- bestaande refs – laten staan -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.6" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug"       Version="8.0.0"  />
-    <PackageReference Include="Microsoft.Maui.Controls"                  Version="8.0.100"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
     <ProjectReference Include="..\OverstromingsApp.Core\OverstromingsApp.Core.csproj" />
   </ItemGroup>
 </Project>

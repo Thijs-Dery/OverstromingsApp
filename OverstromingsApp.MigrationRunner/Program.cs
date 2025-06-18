@@ -1,1 +1,0 @@
-Console.WriteLine("Migration runner loaded. Use this as --startup-project for dotnet ef.");
