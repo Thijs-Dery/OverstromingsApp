@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using OverstromingsApp.Core.Models;
 
 namespace OverstromingsApp.Core;
 

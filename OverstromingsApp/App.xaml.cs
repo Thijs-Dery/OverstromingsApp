@@ -1,7 +1,9 @@
-﻿using OverstromingsApp.Core;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using OverstromingsApp.Core;           
+using OverstromingsApp.Core.Models;    
 
-namespace OverstromingsApp;
+namespace OverstromingsApp;            
 
 public partial class App : Application
 {
@@ -12,13 +14,15 @@ public partial class App : Application
         InitializeComponent();
         Services = serviceProvider;
 
-        var context = Services.GetRequiredService<AppDbContext>();
-        _ = SeedDatabaseAsync(context);
+        // database migreren + seeden
+        var db = Services.GetRequiredService<AppDbContext>();
+        db.Database.Migrate();                  
+        _ = SeedDatabaseAsync(db);
 
         MainPage = new AppShell();
     }
 
-    private async Task SeedDatabaseAsync(AppDbContext context)
+    private static async Task SeedDatabaseAsync(AppDbContext context)
     {
         try
         {
@@ -27,7 +31,7 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Seeding failed: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Seeding failed: {ex}");
         }
     }
 }

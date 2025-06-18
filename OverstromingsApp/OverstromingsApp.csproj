@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <!-- EF Core tooling **moet** in het start-project aanwezig zijn -->
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6" PrivateAssets="all" />
 
     <!-- bestaande refs – laten staan -->

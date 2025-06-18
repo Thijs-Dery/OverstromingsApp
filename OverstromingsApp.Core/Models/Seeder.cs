@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using OverstromingsApp.Core;
 using OverstromingsApp.Core.Models;
 
-namespace OverstromingsApp.Core;
+namespace OverstromingsApp.Core.Models;
 
 public static class Seeder
 {

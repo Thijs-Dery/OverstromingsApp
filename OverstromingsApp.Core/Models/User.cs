@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OverstromingsApp.Models;
+namespace OverstromingsApp.Core.Models;
 
 public class User
 {

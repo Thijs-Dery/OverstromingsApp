@@ -1,25 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:OverstromingsApp.ViewModels"
              x:Class="OverstromingsApp.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
              Title="Login"
              Padding="30">
 
     <VerticalStackLayout Spacing="20" VerticalOptions="Center">
         <Image Source="aquafin.png" HeightRequest="100" HorizontalOptions="Center" />
 
-        <Entry x:Name="emailEntry"
-               Placeholder="E-mail"
+        <Entry Placeholder="E-mail"
                Keyboard="Email"
+               Text="{Binding Email}"
                HorizontalOptions="Fill" />
 
-        <Entry x:Name="passwordEntry"
-               Placeholder="Wachtwoord"
+        <Entry Placeholder="Wachtwoord"
                IsPassword="True"
+               Text="{Binding Password}"
                HorizontalOptions="Fill" />
 
         <Button Text="Inloggen"
-                Clicked="OnLoginClicked"
+                Command="{Binding SignInCommand}"
                 HorizontalOptions="Fill" />
 
         <Label Text="Wachtwoord vergeten?"

@@ -2,10 +2,6 @@
 using Microsoft.Maui.Controls;
 using OverstromingsApp.Core;
 using OverstromingsApp.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OverstromingsApp.Views;
 
@@ -71,8 +67,8 @@ public partial class TabelPage : ContentPage
         var thresholds = new Dictionary<string, int>
         {
             { "Winter", 300 },
-            { "Lente", 250 },
-            { "Zomer", 260 },
+            { "Lente",  250 },
+            { "Zomer",  260 },
             { "Herfst", 280 }
         };
 

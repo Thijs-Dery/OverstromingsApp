@@ -3,33 +3,37 @@
     x:Class="OverstromingsApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:views="clr-namespace:OverstromingsApp.Views">
+    xmlns:views="clr-namespace:OverstromingsApp.Views"
+    Shell.FlyoutBehavior="Disabled">
 
-    <!-- Startpagina -->
+    <!-- Loginpagina als route -->
     <ShellContent
         Title="Login"
-        ContentTemplate="{DataTemplate views:LoginPage}"
-        Route="LoginPage" />
+        Route="LoginPage"
+        ContentTemplate="{DataTemplate views:LoginPage}" />
 
-    <!-- Andere pagina’s -->
+    <!-- Hoofdpagina na login -->
     <ShellContent
         Title="Tabel"
-        ContentTemplate="{DataTemplate views:TabelPage}"
-        Route="TabelPage" />
+        Route="TabelPage"
+        ContentTemplate="{DataTemplate views:TabelPage}" />
 
+    <!-- Filterpagina -->
     <ShellContent
         Title="Filter"
-        ContentTemplate="{DataTemplate views:FilterPage}"
-        Route="FilterPage" />
+        Route="FilterPage"
+        ContentTemplate="{DataTemplate views:FilterPage}" />
 
+    <!-- Beheerpagina -->
     <ShellContent
         Title="Admin"
-        ContentTemplate="{DataTemplate views:AdminPage}"
-        Route="AdminPage" />
+        Route="AdminPage"
+        ContentTemplate="{DataTemplate views:AdminPage}" />
 
+    <!-- Wachtwoord vergeten -->
     <ShellContent
         Title="Wachtwoord Herstellen"
-        ContentTemplate="{DataTemplate views:ForgotPasswordPage}"
-        Route="ForgotPasswordPage" />
+        Route="ForgotPasswordPage"
+        ContentTemplate="{DataTemplate views:ForgotPasswordPage}" />
 
 </Shell>

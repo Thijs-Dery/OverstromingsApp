@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Logging;
 using OverstromingsApp.Controllers;
 using OverstromingsApp.Core;
+using OverstromingsApp.ViewModels;
 using OverstromingsApp.Views;
-using System;
 
 namespace OverstromingsApp;
 
@@ -18,15 +18,21 @@ public static class MauiProgram
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
 
-        builder.Services.AddSingleton<NeerslagController>();
+        // ViewModels
+        builder.Services.AddTransient<LoginViewModel>();
+
+        // Pagina's
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<TabelPage>();
         builder.Services.AddTransient<FilterPage>();
         builder.Services.AddTransient<AdminPage>();
         builder.Services.AddTransient<ForgotPasswordPage>();
 
+        // Controllers / services
+        builder.Services.AddSingleton<NeerslagController>();
+
         builder
-            .UseMauiApp<App>()
+            .UseMauiApp<App>() 
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

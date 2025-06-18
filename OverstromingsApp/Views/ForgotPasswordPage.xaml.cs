@@ -11,7 +11,7 @@ public partial class ForgotPasswordPage : ContentPage
 
     private async void OnRequestClicked(object sender, EventArgs e)
     {
-        string email = emailEntry.Text;
+        string email = emailEntry.Text?.Trim();
 
         if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
         {
@@ -19,11 +19,12 @@ public partial class ForgotPasswordPage : ContentPage
             return;
         }
 
-        await DisplayAlert("Verzonden", $"Er is een aanvraag verstuurd naar {email}", "OK");
+        // Hier zou je een echte reset-link kunnen genereren / e-mail versturen
+        await DisplayAlert("Verzonden", $"Er is een reset-aanvraag verstuurd naar: {email}", "OK");
     }
 
     private async void OnBackToLoginClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("LoginPage");
+        await Shell.Current.GoToAsync("//LoginPage");
     }
 }
