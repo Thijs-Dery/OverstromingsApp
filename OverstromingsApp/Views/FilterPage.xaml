@@ -4,16 +4,13 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <!-- hoofdraster: 2 kolommen -->
     <Grid ColumnSpacing="30" Padding="20">
         <Grid.ColumnDefinitions>
-            <!-- linkerkolom = filters (vaste breedte) -->
             <ColumnDefinition Width="320" />
-            <!-- rechterkolom = resultaten (rest van het scherm) -->
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!-- =========  FILTERPANEEL  ========= -->
+        <!-- FILTERS -->
         <ScrollView Grid.Column="0">
             <VerticalStackLayout Spacing="18">
 
@@ -25,12 +22,6 @@
                         SelectedItem="{Binding GeselecteerdeMaand}"
                         Title="Alle maanden" />
 
-                <!-- Jaar -->
-                <Label Text="Jaartal" Margin="0,10,0,0" />
-                <Picker ItemsSource="{Binding Jaartallen}"
-                        SelectedItem="{Binding GeselecteerdJaar}"
-                        Title="Alle jaren" />
-
                 <!-- Seizoen -->
                 <Label Text="Seizoen" Margin="0,10,0,0" />
                 <Picker ItemsSource="{Binding Seizoenen}"
@@ -39,28 +30,31 @@
 
                 <!-- Neerslagbereik -->
                 <Label Text="Hoeveelheid neerslag:" Margin="0,10,0,0" />
+                <HorizontalStackLayout Spacing="10">
+                    <Entry WidthRequest="80" Keyboard="Numeric"
+                           Placeholder="min"
+                           Text="{Binding MinFilterNeerslag, Mode=TwoWay}" />
+                    <Label Text="tot" />
+                    <Entry WidthRequest="80" Keyboard="Numeric"
+                           Placeholder="max"
+                           Text="{Binding MaxFilterNeerslag, Mode=TwoWay}" />
+                    <Label Text="mm" />
+                </HorizontalStackLayout>
+
                 <Label Text="{Binding NeerslagBereikLabel}" FontSize="12" />
 
-                <!-- Minimum-slider -->
-                <Slider Minimum="{Binding MinNeerslag}"
-                        Maximum="{Binding MaxNeerslag}"
-                        Value="{Binding MinFilterNeerslag}" />
-
-                <!-- Maximum-slider -->
-                <Slider Minimum="{Binding MinNeerslag}"
-                        Maximum="{Binding MaxNeerslag}"
-                        Value="{Binding MaxFilterNeerslag}" />
-
-                <!-- Sorteren -->
-                <Label Text="Sorteer op neerslag:" Margin="0,10,0,0" />
-                <Switch IsToggled="{Binding SorteerAfdalend}" />
+                <!-- Sorteer op jaar -->
+                <Label Text="Sorteer op jaar:" Margin="0,10,0,0" />
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="Nieuw → Oud" />
+                    <Switch IsToggled="{Binding SorteerOpJaarAflopend}" />
+                </HorizontalStackLayout>
 
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- =========  RESULTATEN  ========= -->
+        <!-- RESULTATEN -->
         <ScrollView Grid.Column="1">
-            <!--  TableContainer wordt in code-behind gevuld  -->
             <VerticalStackLayout x:Name="TableContainer" Spacing="6" />
         </ScrollView>
     </Grid>

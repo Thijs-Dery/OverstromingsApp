@@ -4,137 +4,131 @@ using OverstromingsApp.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Linq; // <-- Belangrijk
 
 namespace OverstromingsApp.Views;
 
 public partial class FilterPage : ContentPage, INotifyPropertyChanged
 {
-    private readonly AppDbContext _context;
-    private bool _isLoading = false;
+    private readonly AppDbContext _db;
+    private bool _busy;
 
-    public List<int?> Maanden { get; } = new List<int?> { null }
-        .Concat(Enumerable.Range(1, 12).Select(m => (int?)m)).ToList();
-
-    public List<int?> Jaartallen { get; set; } = new() { null };
+    public List<int?> Maanden { get; } =
+        new List<int?> { null }.Concat(Enumerable.Range(1, 12).Select(i => (int?)i)).ToList();
 
     public List<string> Seizoenen { get; } = new() { "", "Winter", "Lente", "Zomer", "Herfst" };
 
-    private int? _geselecteerdeMaand = null;
+    private int? _maand;
+    private string _seizoen = "";
+    private double _min = 0, _max = 500;
+    private bool _afdalend = true;
+    private bool _sortJaarAflopend = true;
+
     public int? GeselecteerdeMaand
     {
-        get => _geselecteerdeMaand;
-        set { _geselecteerdeMaand = value; OnPropertyChanged(); _ = LoadGegevensAsync(); }
+        get => _maand;
+        set { _maand = value; Notify(); }
     }
 
-    private int? _geselecteerdJaar = null;
-    public int? GeselecteerdJaar
-    {
-        get => _geselecteerdJaar;
-        set { _geselecteerdJaar = value; OnPropertyChanged(); _ = LoadGegevensAsync(); }
-    }
-
-    private string _geselecteerdSeizoen = "";
     public string GeselecteerdSeizoen
     {
-        get => _geselecteerdSeizoen;
-        set { _geselecteerdSeizoen = value; OnPropertyChanged(); _ = LoadGegevensAsync(); }
+        get => _seizoen;
+        set { _seizoen = value; Notify(); }
     }
 
-    public int MinNeerslag { get; set; } = 0;
-    public int MaxNeerslag { get; set; } = 500;
+    public int MinNeerslag { get; } = 0;
+    public int MaxNeerslag { get; } = 500;
 
-    private double _minFilterNeerslag = 0;
     public double MinFilterNeerslag
     {
-        get => _minFilterNeerslag;
-        set { _minFilterNeerslag = value; OnPropertyChanged(); OnPropertyChanged(nameof(NeerslagBereikLabel)); _ = LoadGegevensAsync(); }
+        get => _min;
+        set { _min = value; Notify(nameof(MinFilterNeerslag), true); }
     }
 
-    private double _maxFilterNeerslag = 500;
     public double MaxFilterNeerslag
     {
-        get => _maxFilterNeerslag;
-        set { _maxFilterNeerslag = value; OnPropertyChanged(); OnPropertyChanged(nameof(NeerslagBereikLabel)); _ = LoadGegevensAsync(); }
+        get => _max;
+        set { _max = value; Notify(nameof(MaxFilterNeerslag), true); }
     }
 
-    private bool _sorteerAfdalend = true;
     public bool SorteerAfdalend
     {
-        get => _sorteerAfdalend;
-        set { _sorteerAfdalend = value; OnPropertyChanged(); _ = LoadGegevensAsync(); }
+        get => _afdalend;
+        set { _afdalend = value; Notify(); }
     }
 
-    public string NeerslagBereikLabel => $"Tussen {MinFilterNeerslag:F0} en {MaxFilterNeerslag:F0} mm";
+    public bool SorteerOpJaarAflopend
+    {
+        get => _sortJaarAflopend;
+        set { _sortJaarAflopend = value; Notify(); }
+    }
+
+    public string NeerslagBereikLabel =>
+        $"Tussen {MinFilterNeerslag:F0} en {MaxFilterNeerslag:F0} mm";
 
     public FilterPage(AppDbContext context)
     {
         InitializeComponent();
-        _context = context;
+        _db = context;
         BindingContext = this;
-
-        MinFilterNeerslag = MinNeerslag;
-        MaxFilterNeerslag = MaxNeerslag;
-
-        _ = LoadJarenAsync();
-        _ = LoadGegevensAsync();
+        _ = VerversAsync();
     }
 
-    private async Task LoadJarenAsync()
+    private async Task VerversAsync()
     {
-        var jaren = await _context.Neerslag
-            .Select(n => n.Jaar).Distinct().OrderBy(y => y).ToListAsync();
-
-        Jaartallen = new List<int?> { null };
-        Jaartallen.AddRange(jaren.Select(j => (int?)j));
-        OnPropertyChanged(nameof(Jaartallen));
-    }
-
-    private async Task LoadGegevensAsync()
-    {
-        if (_isLoading || TableContainer == null) return;
-        _isLoading = true;
+        if (_busy || TableContainer == null) return;
+        _busy = true;
 
         try
         {
             TableContainer.Children.Clear();
 
-            var data = await _context.Neerslag.ToListAsync();
+            var data = await _db.Neerslag.AsNoTracking().ToListAsync();
 
-            var gefilterd = data.Where(d =>
-                (!GeselecteerdeMaand.HasValue || d.Maand == GeselecteerdeMaand) &&
-                (!GeselecteerdJaar.HasValue || d.Jaar == GeselecteerdJaar) &&
-                (string.IsNullOrWhiteSpace(GeselecteerdSeizoen) || d.Seizoen.Equals(GeselecteerdSeizoen, StringComparison.OrdinalIgnoreCase)) &&
-                d.NeerslagMM >= MinFilterNeerslag &&
-                d.NeerslagMM <= MaxFilterNeerslag);
+            var query = data.Where(g =>
+                (!GeselecteerdeMaand.HasValue || g.Maand == GeselecteerdeMaand) &&
+                (string.IsNullOrWhiteSpace(GeselecteerdSeizoen) ||
+                 g.Seizoen.Equals(GeselecteerdSeizoen, StringComparison.OrdinalIgnoreCase)) &&
+                g.NeerslagMM >= MinFilterNeerslag &&
+                g.NeerslagMM <= MaxFilterNeerslag);
 
-            gefilterd = SorteerAfdalend
-                ? gefilterd.OrderByDescending(d => d.NeerslagMM)
-                : gefilterd.OrderBy(d => d.NeerslagMM);
+            IOrderedEnumerable<DataModel> orderedQuery = SorteerOpJaarAflopend
+                ? query.OrderByDescending(g => g.Jaar)
+                : query.OrderBy(g => g.Jaar);
 
-            foreach (var item in gefilterd)
-                TableContainer.Children.Add(CreateRij(item));
+            orderedQuery = SorteerAfdalend
+                ? orderedQuery.ThenByDescending(g => g.NeerslagMM)
+                : orderedQuery.ThenBy(g => g.NeerslagMM);
+
+            foreach (var g in orderedQuery)
+                TableContainer.Children.Add(MaakRij(g));
         }
-        finally { _isLoading = false; }
+        finally { _busy = false; }
     }
 
-    private View CreateRij(DataModel model) => new HorizontalStackLayout
+
+
+    private static View MaakRij(DataModel m) => new HorizontalStackLayout
     {
         Spacing = 15,
         Children =
         {
-            new Label { Text = model.Jaar.ToString(), WidthRequest = 60 },
-            new Label { Text = model.Maand.ToString(), WidthRequest = 100 },
-            new Label { Text = $"{model.NeerslagMM} mm", WidthRequest = 100 }
+            new Label { Text = m.Jaar.ToString(),    WidthRequest = 60 },
+            new Label { Text = m.Maand.ToString(),   WidthRequest = 90 },
+            new Label { Text = $"{m.NeerslagMM} mm", WidthRequest = 100 }
         }
     };
 
-    protected override void OnDisappearing()
+    private void Notify([CallerMemberName] string? prop = null, bool onlyLabel = false)
     {
-        base.OnDisappearing();
-        BindingContext = null;
+        OnPropertyChanged(prop);
+        if (onlyLabel || prop is nameof(MinFilterNeerslag) || prop is nameof(MaxFilterNeerslag))
+            OnPropertyChanged(nameof(NeerslagBereikLabel));
+
+        _ = VerversAsync();
     }
 
-    public new event PropertyChangedEventHandler PropertyChanged;
-    protected new void OnPropertyChanged([CallerMemberName] string name = null) =>
+    public new event PropertyChangedEventHandler? PropertyChanged;
+    protected new void OnPropertyChanged([CallerMemberName] string? name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

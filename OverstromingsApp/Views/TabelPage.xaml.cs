@@ -89,8 +89,7 @@ public partial class TabelPage : ContentPage
                 VerticalTextAlignment = TextAlignment.Center,
                 Padding = 5,
                 Margin = new Thickness(1),
-                BackgroundColor = Colors.Transparent,
-                TextColor = Colors.White
+                BackgroundColor = Colors.Transparent
             };
             Grid.SetRow(yearLabel, rowIndex);
             Grid.SetColumn(yearLabel, 0);
