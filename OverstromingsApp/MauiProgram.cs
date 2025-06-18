@@ -19,6 +19,7 @@ public static class MauiProgram
             options.UseSqlServer(connectionString));
 
         // ViewModels
+        builder.Services.AddTransient<UserManagementViewModel>();
         builder.Services.AddTransient<LoginViewModel>();
 
         // Pagina's

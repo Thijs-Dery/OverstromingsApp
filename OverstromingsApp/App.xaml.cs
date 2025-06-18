@@ -1,13 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using OverstromingsApp.Core;           
-using OverstromingsApp.Core.Models;    
+using OverstromingsApp.Core;
+using OverstromingsApp.Core.Models;
 
-namespace OverstromingsApp;            
+namespace OverstromingsApp;
 
 public partial class App : Application
 {
     public static IServiceProvider Services { get; private set; } = null!;
+
+    // Nieuw: actieve ingelogde gebruiker
+    public static User? CurrentUser { get; set; }
 
     public App(IServiceProvider serviceProvider)
     {
@@ -16,7 +19,7 @@ public partial class App : Application
 
         // database migreren + seeden
         var db = Services.GetRequiredService<AppDbContext>();
-        db.Database.Migrate();                  
+        db.Database.Migrate();
         _ = SeedDatabaseAsync(db);
 
         MainPage = new AppShell();

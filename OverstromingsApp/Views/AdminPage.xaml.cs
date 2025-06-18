@@ -1,84 +1,23 @@
-﻿using System.Collections.Generic;
-using Microsoft.Maui.Controls;
+﻿using OverstromingsApp.ViewModels;
 
 namespace OverstromingsApp.Views;
 
 public partial class AdminPage : ContentPage
 {
-    private List<(string Name, string Role)> users = new()
-    {
-        ("User 1", "Standaard"),
-        ("User 2", "Analist"),
-        ("User 3", "Standaard"),
-        ("User 4", "Admin"),
-        ("User 5", "Standaard"),
-    };
+    private readonly UserManagementViewModel _vm;
 
     public AdminPage()
     {
         InitializeComponent();
-        RenderUsers();
+        _vm = App.Services.GetRequiredService<UserManagementViewModel>();
+        BindingContext = _vm;
     }
 
-    private void RenderUsers()
+    private void OnRoleChanged(object sender, EventArgs e)
     {
-        UsersStack.Children.Clear();
-
-        foreach (var user in users)
+        if (sender is Picker picker && picker.BindingContext is Core.Models.User user)
         {
-            var nameLabel = new Label { Text = user.Name, WidthRequest = 100 };
-            var roleLabel = new Label
-            {
-                Text = user.Role,
-                BackgroundColor = user.Role switch
-                {
-                    "Admin" => Colors.LightGreen,
-                    "Analist" => Colors.Cyan,
-                    _ => Colors.LightGray
-                },
-                Padding = 5,
-                WidthRequest = 100,
-                HorizontalTextAlignment = TextAlignment.Center
-            };
-
-            var deleteBtn = new Button { Text = "X", WidthRequest = 40 };
-            deleteBtn.Clicked += (s, e) =>
-            {
-                users.Remove(user);
-                RenderUsers();
-            };
-
-            var row = new HorizontalStackLayout
-            {
-                Spacing = 10,
-                Children = { nameLabel, new Label { Text = "Rol:" }, roleLabel, deleteBtn }
-            };
-
-            if (user.Role == "Admin")
-            {
-                var tapGesture = new TapGestureRecognizer();
-                tapGesture.Tapped += async (s, e) =>
-                {
-                    await Shell.Current.GoToAsync("AdminPage");
-                };
-                roleLabel.GestureRecognizers.Add(tapGesture);
-            }
-
-            UsersStack.Children.Add(row);
-        }
-    }
-
-    private void OnAddClicked(object sender, EventArgs e)
-    {
-        var email = EmailEntry.Text;
-        var password = PasswordEntry.Text;
-
-        if (!string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(password))
-        {
-            users.Add((email, "Standaard"));
-            EmailEntry.Text = string.Empty;
-            PasswordEntry.Text = string.Empty;
-            RenderUsers();
+            _ = _vm.UpdateUserRoleAsync(user);
         }
     }
 }

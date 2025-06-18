@@ -3,37 +3,28 @@
     x:Class="OverstromingsApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:views="clr-namespace:OverstromingsApp.Views"
-    Shell.FlyoutBehavior="Disabled">
+    xmlns:views="clr-namespace:OverstromingsApp.Views">
 
-    <!-- Loginpagina als route -->
-    <ShellContent
-        Title="Login"
-        Route="LoginPage"
-        ContentTemplate="{DataTemplate views:LoginPage}" />
+    <!-- Hoofdmenu -->
+    <FlyoutItem Title="Start" Route="TabelPage">
+        <ShellContent Title="Tabel" ContentTemplate="{DataTemplate views:TabelPage}" />
+    </FlyoutItem>
 
-    <!-- Hoofdpagina na login -->
-    <ShellContent
-        Title="Tabel"
-        Route="TabelPage"
-        ContentTemplate="{DataTemplate views:TabelPage}" />
+    <FlyoutItem Title="Filter" Route="FilterPage">
+        <ShellContent Title="Filter" ContentTemplate="{DataTemplate views:FilterPage}" />
+    </FlyoutItem>
 
-    <!-- Filterpagina -->
-    <ShellContent
-        Title="Filter"
-        Route="FilterPage"
-        ContentTemplate="{DataTemplate views:FilterPage}" />
+    <FlyoutItem Title="Wachtwoord vergeten" Route="ForgotPasswordPage">
+        <ShellContent Title="Wachtwoord vergeten" ContentTemplate="{DataTemplate views:ForgotPasswordPage}" />
+    </FlyoutItem>
 
-    <!-- Beheerpagina -->
-    <ShellContent
-        Title="Admin"
-        Route="AdminPage"
-        ContentTemplate="{DataTemplate views:AdminPage}" />
+    <!-- Admin enkel zichtbaar indien nodig -->
+    <FlyoutItem Title="Admin" Route="AdminPage" x:Name="AdminFlyout">
+        <ShellContent Title="Beheer" ContentTemplate="{DataTemplate views:AdminPage}" />
+    </FlyoutItem>
 
-    <!-- Wachtwoord vergeten -->
-    <ShellContent
-        Title="Wachtwoord Herstellen"
-        Route="ForgotPasswordPage"
-        ContentTemplate="{DataTemplate views:ForgotPasswordPage}" />
+    <FlyoutItem Title="Login" Route="LoginPage">
+        <ShellContent Title="Login" ContentTemplate="{DataTemplate views:LoginPage}" />
+    </FlyoutItem>
 
 </Shell>

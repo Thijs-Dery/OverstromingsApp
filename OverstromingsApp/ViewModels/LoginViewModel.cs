@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using OverstromingsApp.Core;
+using OverstromingsApp.Core.Models;
+using OverstromingsApp.Helpers;
 
 namespace OverstromingsApp.ViewModels;
 
@@ -27,8 +29,9 @@ public partial class LoginViewModel : ObservableObject
             return;
         }
 
-        // *** succesvol ingelogd ***
-        await Shell.Current.GoToAsync("///TabelPage");
+        App.CurrentUser = user;
+
+        await Shell.Current.GoToAsync("//TabelPage");
     }
 
     // ------- helper -----------

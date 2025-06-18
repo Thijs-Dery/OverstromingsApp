@@ -1,23 +1,46 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ContentPage 
+<ContentPage
     x:Class="OverstromingsApp.Views.AdminPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:OverstromingsApp.ViewModels"
+    xmlns:models="clr-namespace:OverstromingsApp.Core.Models;assembly=OverstromingsApp.Core"
+    x:DataType="vm:UserManagementViewModel"
     Title="Gebruikersbeheer">
 
-    <VerticalStackLayout Padding="20" Spacing="15">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
 
-        <!-- Invoervelden -->
-        <Entry x:Name="EmailEntry" Placeholder="E-mail" Keyboard="Email" />
-        <Entry x:Name="PasswordEntry" Placeholder="Wachtwoord" IsPassword="True" />
+            <!-- Zoekveld -->
+            <Entry Placeholder="Zoek op e-mail"
+                   Text="{Binding Zoekterm}" />
 
-        <!-- Toevoegen knop -->
-        <Button Text="Gebruiker toevoegen" Clicked="OnAddClicked" />
+            <!-- Gebruikerslijst -->
+            <CollectionView ItemsSource="{Binding Users}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:User">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="{Binding Email}" WidthRequest="180" />
+                            <Picker ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type vm:UserManagementViewModel}}, Path=Rollen}"
+                                    SelectedItem="{Binding Role}"
+                                    WidthRequest="120"
+                                    SelectedIndexChanged="OnRoleChanged" />
+                            <Button Text="Verwijder"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UserManagementViewModel}}, Path=DeleteUserCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </HorizontalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-        <!-- Gebruikerslijst -->
-        <ScrollView>
-            <VerticalStackLayout x:Name="UsersStack" Spacing="10" />
-        </ScrollView>
+            <BoxView HeightRequest="1" Color="Gray" />
 
-    </VerticalStackLayout>
+            <!-- Nieuw gebruiker toevoegen -->
+            <Label Text="Nieuwe gebruiker toevoegen" FontAttributes="Bold" />
+            <Entry Placeholder="E-mail" Text="{Binding NieuwEmail}" Keyboard="Email" />
+            <Entry Placeholder="Wachtwoord" Text="{Binding NieuwWachtwoord}" IsPassword="True" />
+            <Button Text="Toevoegen" Command="{Binding AddNewUserCommand}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
