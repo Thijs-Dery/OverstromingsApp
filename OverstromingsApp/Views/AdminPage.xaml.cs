@@ -20,4 +20,9 @@ public partial class AdminPage : ContentPage
             _ = _vm.UpdateUserRoleAsync(user);
         }
     }
+
+    private void OnSearchCompleted(object sender, EventArgs e)
+    {
+        _ = _vm.LoadUsersCommand.ExecuteAsync(null);
+    }
 }

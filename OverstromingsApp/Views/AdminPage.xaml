@@ -13,14 +13,15 @@
 
             <!-- Zoekveld -->
             <Entry Placeholder="Zoek op e-mail"
-                   Text="{Binding Zoekterm}" />
+                   Text="{Binding Zoekterm}"
+                   Completed="OnSearchCompleted" />
 
             <!-- Gebruikerslijst -->
             <CollectionView ItemsSource="{Binding Users}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:User">
-                        <HorizontalStackLayout Spacing="10">
-                            <Label Text="{Binding Email}" WidthRequest="180" />
+                        <HorizontalStackLayout Spacing="10" Padding="5">
+                            <Label Text="{Binding Email}" WidthRequest="180" VerticalOptions="Center" />
                             <Picker ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type vm:UserManagementViewModel}}, Path=Rollen}"
                                     SelectedItem="{Binding Role}"
                                     WidthRequest="120"
@@ -33,7 +34,7 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <BoxView HeightRequest="1" Color="Gray" />
+            <BoxView HeightRequest="1" Color="Gray" Margin="0,10" />
 
             <!-- Nieuw gebruiker toevoegen -->
             <Label Text="Nieuwe gebruiker toevoegen" FontAttributes="Bold" />

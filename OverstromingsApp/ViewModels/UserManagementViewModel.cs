@@ -15,9 +15,14 @@ public partial class UserManagementViewModel : ObservableObject
     public ObservableCollection<User> Users { get; } = new();
     public ObservableCollection<string> Rollen { get; } = new() { "Standaard", "Analist", "Admin" };
 
-    [ObservableProperty] private string zoekterm = string.Empty;
-    [ObservableProperty] private string nieuwEmail = string.Empty;
-    [ObservableProperty] private string nieuwWachtwoord = string.Empty;
+    [ObservableProperty]
+    private string _zoekterm = string.Empty;
+
+    [ObservableProperty]
+    private string _nieuwEmail = string.Empty;
+
+    [ObservableProperty]
+    private string _nieuwWachtwoord = string.Empty;
 
     public UserManagementViewModel(AppDbContext db)
     {
@@ -42,47 +47,109 @@ public partial class UserManagementViewModel : ObservableObject
     [RelayCommand]
     private async Task DeleteUserAsync(User user)
     {
-        _db.Users.Remove(user);
-        await _db.SaveChangesAsync();
-        await LoadUsersAsync();
+        try
+        {
+            if (user == null)
+            {
+                await Shell.Current.DisplayAlert("Fout", "Geen geldige gebruiker geselecteerd.", "OK");
+                return;
+            }
+
+            // Haal de gebruiker vers uit de database om te voorkomen dat de lokale Role-binding null is
+            var userInDb = await _db.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+            if (userInDb == null)
+            {
+                await Shell.Current.DisplayAlert("Fout", "Gebruiker bestaat niet meer.", "OK");
+                return;
+            }
+
+            _db.Entry(userInDb).State = EntityState.Deleted;
+            await _db.SaveChangesAsync();
+
+            await Shell.Current.DisplayAlert("Verwijderd", $"Gebruiker '{user.Email}' is verwijderd.", "OK");
+            await LoadUsersAsync();
+        }
+        catch (Exception ex)
+        {
+            var msg = ex.InnerException?.Message ?? ex.Message;
+            await Shell.Current.DisplayAlert("Fout", $"Verwijderen mislukt: {msg}", "OK");
+            System.Diagnostics.Debug.WriteLine($"[DeleteUserAsync] ERROR: {ex}");
+        }
     }
 
-    // 🔧 Dit is de methode die we aanroepen in .xaml.cs
+
+
     public async Task UpdateUserRoleAsync(User user)
     {
-        _db.Users.Update(user);
-        await _db.SaveChangesAsync();
+        try
+        {
+            if (string.IsNullOrWhiteSpace(user.Role))
+                user.Role = "Standaard";
+
+            _db.Users.Update(user);
+            await _db.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Fout", $"Rol bijwerken mislukt: {ex.Message}", "OK");
+            System.Diagnostics.Debug.WriteLine($"[UpdateUserRoleAsync] ERROR: {ex}");
+        }
     }
 
     [RelayCommand]
     private async Task AddNewUserAsync()
     {
-        if (string.IsNullOrWhiteSpace(NieuwEmail) || string.IsNullOrWhiteSpace(NieuwWachtwoord))
-            return;
-
-        var salt = RandomNumberGenerator.GetBytes(16);
-        var hash = Rfc2898DeriveBytes.Pbkdf2(
-            NieuwWachtwoord,
-            salt,
-            100_000,
-            HashAlgorithmName.SHA256,
-            32);
-
-        var newUser = new User
+        try
         {
-            Id = Guid.NewGuid(),
-            Email = NieuwEmail,
-            PasswordSalt = salt,
-            PasswordHash = hash,
-            Role = "Standaard"
-        };
+            if (string.IsNullOrWhiteSpace(NieuwEmail) || string.IsNullOrWhiteSpace(NieuwWachtwoord))
+            {
+                await Shell.Current.DisplayAlert("Fout", "Vul een e-mailadres en wachtwoord in.", "OK");
+                return;
+            }
 
-        _db.Users.Add(newUser);
-        await _db.SaveChangesAsync();
+            if (NieuwWachtwoord.Length < 6)
+            {
+                await Shell.Current.DisplayAlert("Fout", "Wachtwoord moet minstens 6 tekens zijn.", "OK");
+                return;
+            }
 
-        NieuwEmail = string.Empty;
-        NieuwWachtwoord = string.Empty;
+            var bestaatAl = await _db.Users.AnyAsync(u => u.Email == NieuwEmail);
+            if (bestaatAl)
+            {
+                await Shell.Current.DisplayAlert("Bestaat al", "Er bestaat al een gebruiker met dit e-mailadres.", "OK");
+                return;
+            }
 
-        await LoadUsersAsync();
+            var salt = RandomNumberGenerator.GetBytes(16);
+            var hash = Rfc2898DeriveBytes.Pbkdf2(
+                NieuwWachtwoord,
+                salt,
+                100_000,
+                HashAlgorithmName.SHA256,
+                32);
+
+            var newUser = new User
+            {
+                Id = Guid.NewGuid(),
+                Email = NieuwEmail,
+                PasswordSalt = salt,
+                PasswordHash = hash,
+                Role = "Standaard"
+            };
+
+            _db.Users.Add(newUser);
+            await _db.SaveChangesAsync();
+
+            NieuwEmail = string.Empty;
+            NieuwWachtwoord = string.Empty;
+
+            await Shell.Current.DisplayAlert("Succes", "Gebruiker toegevoegd.", "OK");
+            await LoadUsersAsync();
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Fout", $"Er is iets misgegaan: {ex.Message}", "OK");
+            System.Diagnostics.Debug.WriteLine($"[AddNewUserAsync] ERROR: {ex}");
+        }
     }
 }
