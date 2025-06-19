@@ -14,10 +14,6 @@
         <ShellContent Title="Filter" ContentTemplate="{DataTemplate views:FilterPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Wachtwoord vergeten" Route="ForgotPasswordPage">
-        <ShellContent Title="Wachtwoord vergeten" ContentTemplate="{DataTemplate views:ForgotPasswordPage}" />
-    </FlyoutItem>
-
     <!-- Admin enkel zichtbaar indien nodig -->
     <FlyoutItem Title="Admin" Route="AdminPage" x:Name="AdminFlyout">
         <ShellContent Title="Beheer" ContentTemplate="{DataTemplate views:AdminPage}" />

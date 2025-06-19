@@ -10,7 +10,7 @@ public sealed class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
     {
         var opts = new DbContextOptionsBuilder<AppDbContext>()
                    .UseSqlServer(
-                       "Server=(localdb)\\MSSQLLocalDB;Database=OverstromingsDb;Trusted_Connection=True;")
+                       "Server=np:\\\\.\\pipe\\LOCALDB#E56D628E\\tsql\\query;Database=OverstromingsDb;Trusted_Connection=True;")
                    .Options;
 
         return new AppDbContext(opts);
