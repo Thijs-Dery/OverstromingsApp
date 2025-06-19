@@ -34,4 +34,10 @@
     <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
     <ProjectReference Include="..\OverstromingsApp.Core\OverstromingsApp.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <MauiXaml Update="Views\GrafiekPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+  </ItemGroup>
 </Project>

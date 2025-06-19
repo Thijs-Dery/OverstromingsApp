@@ -13,16 +13,16 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("TabelPage", typeof(Views.TabelPage));
         Routing.RegisterRoute("FilterPage", typeof(Views.FilterPage));
         Routing.RegisterRoute("LoginPage", typeof(Views.LoginPage));
+        Routing.RegisterRoute("GrafiekPage", typeof(Views.GrafiekPage));
 
         Navigating += OnNavigating;
     }
 
     private async void OnNavigating(object sender, ShellNavigatingEventArgs e)
     {
-        // Blokkeer AdminPage voor niet-admins
         if (e.Target.Location.OriginalString.Contains("AdminPage") && !Auth.IsAdmin)
         {
-            e.Cancel(); // stop navigatie
+            e.Cancel();
             await Shell.Current.DisplayAlert("Toegang geweigerd", "Je hebt geen toegang tot deze pagina.", "OK");
         }
     }

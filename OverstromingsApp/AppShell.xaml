@@ -10,6 +10,10 @@
         <ShellContent Title="Tabel" ContentTemplate="{DataTemplate views:TabelPage}" />
     </FlyoutItem>
 
+    <FlyoutItem Title="Grafiek" Route="GrafiekPage">
+        <ShellContent Title="Grafiek" ContentTemplate="{DataTemplate views:GrafiekPage}" />
+    </FlyoutItem>
+
     <FlyoutItem Title="Filter" Route="FilterPage">
         <ShellContent Title="Filter" ContentTemplate="{DataTemplate views:FilterPage}" />
     </FlyoutItem>
