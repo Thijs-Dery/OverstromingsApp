@@ -12,45 +12,48 @@
 
         <!-- FILTERS -->
         <ScrollView Grid.Column="0">
-            <VerticalStackLayout Spacing="18">
+            <Frame Padding="15" BackgroundColor="#f8f8f8" CornerRadius="10">
+                <VerticalStackLayout Spacing="18">
 
-                <Label Text="Filter:" FontSize="20" FontAttributes="Bold" />
+                    <Label Text="Filter:" FontSize="20" FontAttributes="Bold" />
 
-                <!-- Maand -->
-                <Label Text="Maand" />
-                <Picker ItemsSource="{Binding Maanden}"
-                        SelectedItem="{Binding GeselecteerdeMaand}"
-                        Title="Alle maanden" />
+                    <!-- Maand -->
+                    <Label Text="Maand" />
+                    <Picker ItemsSource="{Binding Maanden}"
+                            SelectedItem="{Binding GeselecteerdeMaand}"
+                            Title=""/>
 
-                <!-- Seizoen -->
-                <Label Text="Seizoen" Margin="0,10,0,0" />
-                <Picker ItemsSource="{Binding Seizoenen}"
-                        SelectedItem="{Binding GeselecteerdSeizoen}"
-                        Title="Alle seizoenen" />
+                    <!-- Seizoen -->
+                    <Label Text="Seizoen" />
+                    <Picker ItemsSource="{Binding Seizoenen}"
+                            SelectedItem="{Binding GeselecteerdSeizoen}"
+                            Title=""/>
 
-                <!-- Neerslagbereik -->
-                <Label Text="Hoeveelheid neerslag:" Margin="0,10,0,0" />
-                <HorizontalStackLayout Spacing="10">
-                    <Entry WidthRequest="80" Keyboard="Numeric"
-                           Placeholder="min"
-                           Text="{Binding MinFilterNeerslag, Mode=TwoWay}" />
-                    <Label Text="tot" />
-                    <Entry WidthRequest="80" Keyboard="Numeric"
-                           Placeholder="max"
-                           Text="{Binding MaxFilterNeerslag, Mode=TwoWay}" />
-                    <Label Text="mm" />
-                </HorizontalStackLayout>
+                    <!-- Neerslagbereik -->
+                    <Label Text="Hoeveelheid neerslag:" />
+                    <HorizontalStackLayout Spacing="10">
+                        <Entry WidthRequest="80" Keyboard="Numeric"
+                               Placeholder="min"
+                               Text="{Binding MinFilterNeerslag, Mode=TwoWay}" />
+                        <Label Text="tot" />
+                        <Entry WidthRequest="80" Keyboard="Numeric"
+                               Placeholder="max"
+                               Text="{Binding MaxFilterNeerslag, Mode=TwoWay}" />
+                        <Label Text="mm" />
+                    </HorizontalStackLayout>
 
-                <Label Text="{Binding NeerslagBereikLabel}" FontSize="12" />
+                    <Label Text="{Binding NeerslagBereikLabel}" FontSize="12" TextColor="Gray" />
 
-                <!-- Sorteer op jaar -->
-                <Label Text="Sorteer op jaar:" Margin="0,10,0,0" />
-                <HorizontalStackLayout Spacing="10">
-                    <Label Text="Nieuw → Oud" />
-                    <Switch IsToggled="{Binding SorteerOpJaarAflopend}" />
-                </HorizontalStackLayout>
+                    <!-- Sorteer op jaar -->
+                    <Label Text="Sorteer op jaar:" />
+                    <Button Text="{Binding SorteerTekst}"
+                            Clicked="ToggleSorteerOpJaar_Clicked"
+                            BackgroundColor="#eeeeee"
+                            TextColor="Black"
+                            CornerRadius="8" />
 
-            </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
         </ScrollView>
 
         <!-- RESULTATEN -->

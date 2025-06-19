@@ -4,7 +4,7 @@ using OverstromingsApp.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Linq; // <-- Belangrijk
+using System.Linq;
 
 namespace OverstromingsApp.Views;
 
@@ -13,27 +13,45 @@ public partial class FilterPage : ContentPage, INotifyPropertyChanged
     private readonly AppDbContext _db;
     private bool _busy;
 
-    public List<int?> Maanden { get; } =
-        new List<int?> { null }.Concat(Enumerable.Range(1, 12).Select(i => (int?)i)).ToList();
+    public List<string> Maanden { get; } =
+        new List<string> { "Toon alles" }.Concat(Enumerable.Range(1, 12).Select(i => i.ToString())).ToList();
 
-    public List<string> Seizoenen { get; } = new() { "", "Winter", "Lente", "Zomer", "Herfst" };
+    public List<string> Seizoenen { get; } = new() { "Toon alles", "Winter", "Lente", "Zomer", "Herfst" };
 
-    private int? _maand;
-    private string _seizoen = "";
+    private string _maand = "Toon alles";
+    private string _seizoen = "Toon alles";
     private double _min = 0, _max = 500;
     private bool _afdalend = true;
-    private bool _sortJaarAflopend = true;
+    private bool _sortJaarAflopend = false;
 
-    public int? GeselecteerdeMaand
+    public string GeselecteerdeMaand
     {
         get => _maand;
-        set { _maand = value; Notify(); }
+        set
+        {
+            if (_maand != value)
+            {
+                _maand = value;
+                if (value != "Toon alles" && GeselecteerdSeizoen != "Toon alles")
+                    GeselecteerdSeizoen = "Toon alles";
+                Notify();
+            }
+        }
     }
 
     public string GeselecteerdSeizoen
     {
         get => _seizoen;
-        set { _seizoen = value; Notify(); }
+        set
+        {
+            if (_seizoen != value)
+            {
+                _seizoen = value;
+                if (value != "Toon alles" && GeselecteerdeMaand != "Toon alles")
+                    GeselecteerdeMaand = "Toon alles";
+                Notify();
+            }
+        }
     }
 
     public int MinNeerslag { get; } = 0;
@@ -60,8 +78,15 @@ public partial class FilterPage : ContentPage, INotifyPropertyChanged
     public bool SorteerOpJaarAflopend
     {
         get => _sortJaarAflopend;
-        set { _sortJaarAflopend = value; Notify(); }
+        set
+        {
+            _sortJaarAflopend = value;
+            OnPropertyChanged(nameof(SorteerTekst));
+            Notify();
+        }
     }
+
+    public string SorteerTekst => SorteerOpJaarAflopend ? "Nieuw → Oud" : "Oud → Nieuw";
 
     public string NeerslagBereikLabel =>
         $"Tussen {MinFilterNeerslag:F0} en {MaxFilterNeerslag:F0} mm";
@@ -86,9 +111,8 @@ public partial class FilterPage : ContentPage, INotifyPropertyChanged
             var data = await _db.Neerslag.AsNoTracking().ToListAsync();
 
             var query = data.Where(g =>
-                (!GeselecteerdeMaand.HasValue || g.Maand == GeselecteerdeMaand) &&
-                (string.IsNullOrWhiteSpace(GeselecteerdSeizoen) ||
-                 g.Seizoen.Equals(GeselecteerdSeizoen, StringComparison.OrdinalIgnoreCase)) &&
+                (GeselecteerdeMaand == "Toon alles" || g.Maand.ToString() == GeselecteerdeMaand) &&
+                (GeselecteerdSeizoen == "Toon alles" || g.Seizoen.Equals(GeselecteerdSeizoen, StringComparison.OrdinalIgnoreCase)) &&
                 g.NeerslagMM >= MinFilterNeerslag &&
                 g.NeerslagMM <= MaxFilterNeerslag);
 
@@ -106,18 +130,24 @@ public partial class FilterPage : ContentPage, INotifyPropertyChanged
         finally { _busy = false; }
     }
 
-
-
-    private static View MaakRij(DataModel m) => new HorizontalStackLayout
-    {
-        Spacing = 15,
-        Children =
+    private static View MaakRij(DataModel m) =>
+        new Frame
         {
-            new Label { Text = m.Jaar.ToString(),    WidthRequest = 60 },
-            new Label { Text = m.Maand.ToString(),   WidthRequest = 90 },
-            new Label { Text = $"{m.NeerslagMM} mm", WidthRequest = 100 }
-        }
-    };
+            CornerRadius = 10,
+            Padding = new Thickness(10),
+            Margin = new Thickness(0, 2),
+            BackgroundColor = Colors.LightGray,
+            Content = new HorizontalStackLayout
+            {
+                Spacing = 20,
+                Children =
+                {
+                    new Label { Text = m.Jaar.ToString(), WidthRequest = 60, VerticalOptions = LayoutOptions.Center },
+                    new Label { Text = m.Maand.ToString(), WidthRequest = 60, VerticalOptions = LayoutOptions.Center },
+                    new Label { Text = $"{m.NeerslagMM} mm", WidthRequest = 100, VerticalOptions = LayoutOptions.Center }
+                }
+            }
+        };
 
     private void Notify([CallerMemberName] string? prop = null, bool onlyLabel = false)
     {
@@ -126,6 +156,11 @@ public partial class FilterPage : ContentPage, INotifyPropertyChanged
             OnPropertyChanged(nameof(NeerslagBereikLabel));
 
         _ = VerversAsync();
+    }
+
+    public void ToggleSorteerOpJaar_Clicked(object sender, EventArgs e)
+    {
+        SorteerOpJaarAflopend = !SorteerOpJaarAflopend;
     }
 
     public new event PropertyChangedEventHandler? PropertyChanged;
