@@ -1,13 +1,17 @@
-﻿<Application
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application
     x:Class="OverstromingsApp.App"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:helpers="clr-namespace:OverstromingsApp.Helpers">
 
     <Application.Resources>
         <ResourceDictionary>
 
-            <!-- GEEN MaandConverter meer hier -->
+            <!-- Converter: zichtbaar voor Admin/Analist  -->
+            <helpers:RoleVisibilityConverter x:Key="RoleVisible" />
 
+            <!-- Andere gedeelde resources -->
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
