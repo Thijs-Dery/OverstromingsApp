@@ -5,8 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:OverstromingsApp.Views">
 
-    <!-- Hoofdmenu -->
-    <FlyoutItem Title="Start" Route="TabelPage">
+    <FlyoutItem Title="Tabel" Route="TabelPage">
         <ShellContent Title="Tabel" ContentTemplate="{DataTemplate views:TabelPage}" />
     </FlyoutItem>
 
@@ -18,7 +17,6 @@
         <ShellContent Title="Filter" ContentTemplate="{DataTemplate views:FilterPage}" />
     </FlyoutItem>
 
-    <!-- Admin enkel zichtbaar indien nodig -->
     <FlyoutItem Title="Admin" Route="AdminPage" x:Name="AdminFlyout">
         <ShellContent Title="Beheer" ContentTemplate="{DataTemplate views:AdminPage}" />
     </FlyoutItem>

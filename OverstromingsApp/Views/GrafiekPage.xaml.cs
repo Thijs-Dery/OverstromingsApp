@@ -61,7 +61,7 @@ namespace OverstromingsApp.Views
 #endif
         }
 
-        /* ── lifecycle */
+        /* ── lifecycle ─────────────────────────────── */
         protected override async void OnAppearing()
         {
             base.OnAppearing();
@@ -70,17 +70,17 @@ namespace OverstromingsApp.Views
             ShowYears();
         }
 
-        /* ── dataset helpers */
+        /* ── dataset helpers ───────────────────────── */
         private void Apply(List<YearMonthValue> list, bool months)
         {
             _draw.Values = list.Select(v => v.Value).ToList();
 
-            if (!months)              // jaarlabels
+            if (!months)                            // jaarlabels
             {
                 _draw.Labels = list.Select(v => v.Year.ToString()).ToList();
                 _draw.SecondLabels = null;
             }
-            else                      // maandlabels + jaar onder januari
+            else                                     // maandlabels + jaar onder januari
             {
                 _draw.Labels = list.Select(v =>
                     CultureInfo.CurrentCulture.DateTimeFormat
@@ -98,6 +98,7 @@ namespace OverstromingsApp.Views
             _showingMonths = false;
             _draw.PanOffset = 0;
             _draw.ZoomFactor = ZoomYears;
+            _draw.YearSeparators = new();           // geen hulplijnen in jaar-view
         }
 
         private void ShowMonths()
@@ -105,19 +106,25 @@ namespace OverstromingsApp.Views
             Apply(_monthData, months: true);
             _showingMonths = true;
             _draw.ZoomFactor = ZoomMonths;
+
+            /* indices waar januari start (index > 0) */
+            _draw.YearSeparators = _monthData
+                                   .Select((v, idx) => (v.Month == 1) ? idx : -1)
+                                   .Where(idx => idx > 0)
+                                   .ToList();
         }
 
-        /* ── zoom */
+        /* ── zoom ─────────────────────────────────── */
         private void Zoom(double scale)
         {
             if (!_showingMonths && scale > 1)
                 ShowMonths();
             else if (_showingMonths && scale < 1)
                 ShowYears();
-            // Geen tussenliggende zoomniveaus
+            // Geen tussenliggende zoomniveaus.
         }
 
-        /* ── pan */
+        /* ── pan ──────────────────────────────────── */
         private void OnPan(object s, PanUpdatedEventArgs e)
         {
             if (e.StatusType == GestureStatus.Started)
