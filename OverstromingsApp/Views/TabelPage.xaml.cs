@@ -1,15 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Graphics;
+using Microsoft.EntityFrameworkCore;
+using CommunityToolkit.Mvvm.Messaging;
 using OverstromingsApp.Core;
 using OverstromingsApp.Core.Models;
+using OverstromingsApp.Helpers;    // voor NeerslagChangedMessage
 
 namespace OverstromingsApp.Views;
 
-public partial class TabelPage : ContentPage
+/// <summary>
+/// Toont per jaar de totale neerslag per seizoen.
+/// Ververst automatisch zodra NeerslagChangedMessage ontvangen wordt.
+/// </summary>
+public partial class TabelPage : ContentPage,
+                                 IRecipient<NeerslagChangedMessage>
 {
     private readonly AppDbContext _context;
+    private bool _busy;
 
-    public class JaarSeizoensGegevens
+    // Hulp-DTO om per jaar de seizoenslijsten te bewaren
+    private sealed class JaarSeizoensGegevens
     {
         public List<DataModel> Winter { get; set; } = new();
         public List<DataModel> Lente { get; set; } = new();
@@ -21,122 +35,136 @@ public partial class TabelPage : ContentPage
     {
         InitializeComponent();
         _context = context;
+    }
+
+    // ── Lifecycle: begin/stop luisteren ─────────
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        WeakReferenceMessenger.Default.Register(this);
         _ = LoadAndBuildTableAsync();
     }
 
+    protected override void OnDisappearing()
+    {
+        WeakReferenceMessenger.Default.Unregister<NeerslagChangedMessage>(this);
+        base.OnDisappearing();
+    }
+
+    // ── IRecipient-handler: NIET expression-bodied! ──
+    public void Receive(NeerslagChangedMessage message)
+    {
+        // Herlaad de tabel, fire-and-forget
+        _ = LoadAndBuildTableAsync();
+    }
+
+    // ── Data ophalen & groeperen ─────────────────────
     private async Task LoadAndBuildTableAsync()
     {
+        if (_busy || TableGrid is null)
+            return;
+
+        _busy = true;
         try
         {
             var records = await _context.Neerslag
-                .OrderBy(n => n.Jaar)
-                .ThenBy(n => n.Maand)
-                .ToListAsync();
+                                        .AsNoTracking()
+                                        .OrderBy(r => r.Jaar)
+                                        .ThenBy(r => r.Maand)
+                                        .ToListAsync();
 
             var grouped = records
                 .GroupBy(r => r.Jaar)
-                .ToDictionary(g => g.Key, g =>
-                {
-                    var model = new JaarSeizoensGegevens
+                .ToDictionary(
+                    g => g.Key,
+                    g =>
                     {
-                        Lente = g.Where(m => m.Seizoen == "Lente").ToList(),
-                        Zomer = g.Where(m => m.Seizoen == "Zomer").ToList(),
-                        Herfst = g.Where(m => m.Seizoen == "Herfst").ToList(),
-                        Winter = g.Where(m => m.Seizoen == "Winter").ToList()
-                    };
+                        var dto = new JaarSeizoensGegevens
+                        {
+                            Winter = g.Where(x => x.Seizoen == "Winter").ToList(),
+                            Lente = g.Where(x => x.Seizoen == "Lente").ToList(),
+                            Zomer = g.Where(x => x.Seizoen == "Zomer").ToList(),
+                            Herfst = g.Where(x => x.Seizoen == "Herfst").ToList(),
+                        };
 
-                    var vorigeDecember = records
-                        .Where(m => m.Jaar == g.Key - 1 && m.Maand == 12)
-                        .ToList();
+                        // voeg vorige december toe aan winter
+                        var decPrev = records.Where(x => x.Jaar == g.Key - 1 && x.Maand == 12);
+                        dto.Winter = decPrev.Concat(dto.Winter).ToList();
 
-                    model.Winter = vorigeDecember.Concat(model.Winter).ToList();
-
-                    return model;
-                });
+                        return dto;
+                    });
 
             BuildSeasonTable(grouped);
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"FOUT bij laden van data: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"FOUT tijdens laden: {ex}");
+        }
+        finally
+        {
+            _busy = false;
         }
     }
 
+    // ── Tabel opbouwen in Grid ─────────────────────
     private void BuildSeasonTable(Dictionary<int, JaarSeizoensGegevens> data)
     {
-        var thresholds = new Dictionary<string, int>
+        var grens = new Dictionary<string, int>
         {
-            { "Winter", 300 },
-            { "Lente",  250 },
-            { "Zomer",  260 },
-            { "Herfst", 280 }
+            { "Winter", 300 }, { "Lente", 250 },
+            { "Zomer",  260 }, { "Herfst", 280 }
         };
 
         TableGrid.RowDefinitions.Clear();
         TableGrid.Children.Clear();
 
-        int rowIndex = 0;
-
-        foreach (var year in data.OrderBy(y => y.Key))
+        int row = 0;
+        foreach (var entry in data.OrderBy(e => e.Key))
         {
             TableGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            AddCell(entry.Key.ToString(), row, 0, Colors.Transparent, bold: true);
 
-            var yearLabel = new Label
+            foreach (var (seizoen, col) in new[] { "Winter", "Lente", "Zomer", "Herfst" }
+                                            .Select((s, i) => (s, i + 1)))
             {
-                Text = year.Key.ToString(),
-                FontAttributes = FontAttributes.Bold,
-                HorizontalTextAlignment = TextAlignment.Center,
-                VerticalTextAlignment = TextAlignment.Center,
-                Padding = 5,
-                Margin = new Thickness(1),
-                BackgroundColor = Colors.Transparent
-            };
-            Grid.SetRow(yearLabel, rowIndex);
-            Grid.SetColumn(yearLabel, 0);
-            TableGrid.Children.Add(yearLabel);
-
-            var seasons = new[] { "Winter", "Lente", "Zomer", "Herfst" };
-
-            for (int i = 0; i < seasons.Length; i++)
-            {
-                var season = seasons[i];
-                var list = season switch
+                var lijst = seizoen switch
                 {
-                    "Winter" => data[year.Key].Winter,
-                    "Lente" => data[year.Key].Lente,
-                    "Zomer" => data[year.Key].Zomer,
-                    "Herfst" => data[year.Key].Herfst,
-                    _ => new List<DataModel>()
+                    "Winter" => entry.Value.Winter,
+                    "Lente" => entry.Value.Lente,
+                    "Zomer" => entry.Value.Zomer,
+                    _ => entry.Value.Herfst
                 };
 
-                int totaal = list.Sum(m => m.NeerslagMM);
-
-                var cell = new Label
-                {
-                    Text = totaal.ToString(),
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    VerticalTextAlignment = TextAlignment.Center,
-                    Padding = 5,
-                    Margin = new Thickness(1),
-                    BackgroundColor = GetSeasonColor(season, totaal, thresholds[season]),
-                    TextColor = Colors.White
-                };
-
-                Grid.SetRow(cell, rowIndex);
-                Grid.SetColumn(cell, i + 1);
-                TableGrid.Children.Add(cell);
+                int totaal = lijst.Sum(x => x.NeerslagMM);
+                var kleur = KleurVoorSeizoen(seizoen, totaal, grens[seizoen]);
+                AddCell(totaal.ToString(), row, col, kleur);
             }
 
-            rowIndex++;
+            row++;
         }
     }
 
-    private Color GetSeasonColor(string season, int totaal, int grens)
+    // ── Helper voor één cel ─────────────────────────
+    private void AddCell(string text, int row, int col, Color bg, bool bold = false)
     {
-        if (totaal >= grens + 10)
-            return Colors.Red;
-        if (totaal >= grens)
-            return Colors.Yellow;
-        return Colors.Green;
+        var lbl = new Label
+        {
+            Text = text,
+            FontAttributes = bold ? FontAttributes.Bold : FontAttributes.None,
+            HorizontalTextAlignment = TextAlignment.Center,
+            VerticalTextAlignment = TextAlignment.Center,
+            Padding = 5,
+            Margin = new Thickness(1),
+            BackgroundColor = bg,
+            TextColor = Colors.White
+        };
+        Grid.SetRow(lbl, row);
+        Grid.SetColumn(lbl, col);
+        TableGrid.Children.Add(lbl);
     }
+
+    private static Color KleurVoorSeizoen(string seizoen, int totaal, int grens) =>
+        totaal >= grens + 10 ? Colors.Red :
+        totaal >= grens ? Colors.Yellow :
+                                Colors.Green;
 }
