@@ -28,7 +28,7 @@ public partial class GrafiekPage : ContentPage
     private List<YearMonthValue> _monthData = new();   // elke maand
     private bool _showingMonths = false;
     private double _lastPanX = 0;
-    private const float ZoomMonthThreshold = 2f;
+    private const float ZoomMonthThreshold = 6f;
 
     public GrafiekPage(NeerslagController ctrl)
     {
@@ -97,7 +97,7 @@ public partial class GrafiekPage : ContentPage
     {
         Apply(_monthData, months: true);
         _showingMonths = true;
-        _draw.ZoomFactor = 3f;    // direct wat ruimer
+        _draw.ZoomFactor = 10f;    // direct wat ruimer
     }
 
     /* ── zoom */
