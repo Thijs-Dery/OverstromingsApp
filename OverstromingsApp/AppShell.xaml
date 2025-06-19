@@ -17,6 +17,13 @@
         <ShellContent Title="Filter" ContentTemplate="{DataTemplate views:FilterPage}" />
     </FlyoutItem>
 
+    <FlyoutItem x:Name="ToevoegFlyout"
+        Title="Toevoegen"
+            Route="ToevoegPage">
+        <ShellContent Title="Invoer"
+                  ContentTemplate="{DataTemplate views:ToevoegPage}" />
+    </FlyoutItem>
+
     <FlyoutItem Title="Admin" Route="AdminPage" x:Name="AdminFlyout">
         <ShellContent Title="Beheer" ContentTemplate="{DataTemplate views:AdminPage}" />
     </FlyoutItem>

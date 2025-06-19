@@ -15,7 +15,6 @@ namespace OverstromingsApp.Views
 {
     public partial class GrafiekPage : ContentPage
     {
-        /* ctor zonder parameters – vereist door XAML/Shell */
         public GrafiekPage()
             : this(App.Current!.Handler!.MauiContext!.Services
                        .GetRequiredService<NeerslagController>())
@@ -24,8 +23,8 @@ namespace OverstromingsApp.Views
         private readonly NeerslagController _ctrl;
         private readonly SimpleLineChartDrawable _draw = new();
 
-        private List<YearMonthValue> _yearData = new();   // 1 punt per jaar
-        private List<YearMonthValue> _monthData = new();   // elke maand
+        private List<YearMonthValue> _yearData = new();
+        private List<YearMonthValue> _monthData = new();
         private bool _showingMonths = false;
         private double _lastPanX = 0;
 
@@ -38,7 +37,6 @@ namespace OverstromingsApp.Views
             _ctrl = ctrl;
             ChartView.Drawable = _draw;
 
-            /* Pinch – enkel wisselen tussen jaar- en maandweergave */
             var pinch = new PinchGestureRecognizer();
             pinch.PinchUpdated += (s, e) =>
             {
@@ -47,7 +45,6 @@ namespace OverstromingsApp.Views
             };
             ChartView.GestureRecognizers.Add(pinch);
 
-            /* Pan */
             var pan = new PanGestureRecognizer();
             pan.PanUpdated += OnPan;
             ChartView.GestureRecognizers.Add(pan);
@@ -75,12 +72,12 @@ namespace OverstromingsApp.Views
         {
             _draw.Values = list.Select(v => v.Value).ToList();
 
-            if (!months)                            // jaarlabels
+            if (!months)                      
             {
                 _draw.Labels = list.Select(v => v.Year.ToString()).ToList();
                 _draw.SecondLabels = null;
             }
-            else                                     // maandlabels + jaar onder januari
+            else
             {
                 _draw.Labels = list.Select(v =>
                     CultureInfo.CurrentCulture.DateTimeFormat
@@ -98,7 +95,7 @@ namespace OverstromingsApp.Views
             _showingMonths = false;
             _draw.PanOffset = 0;
             _draw.ZoomFactor = ZoomYears;
-            _draw.YearSeparators = new();           // geen hulplijnen in jaar-view
+            _draw.YearSeparators = new();
         }
 
         private void ShowMonths()
@@ -121,7 +118,6 @@ namespace OverstromingsApp.Views
                 ShowMonths();
             else if (_showingMonths && scale < 1)
                 ShowYears();
-            // Geen tussenliggende zoomniveaus.
         }
 
         /* ── pan ──────────────────────────────────── */

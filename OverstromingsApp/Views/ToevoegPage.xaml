@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OverstromingsApp.Views.ToevoegPage"
+             Title="Gegevens toevoegen">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="18">
+
+            <!-- Jaar -->
+            <Entry x:Name="YearEntry"
+                   Keyboard="Numeric"
+                   Placeholder="Jaar (bv. 2024)" />
+
+            <!-- Maand -->
+            <Picker x:Name="MonthPicker"
+                    Title="Maand" />
+
+            <!-- Neerslag -->
+            <Entry x:Name="RainEntry"
+                   Keyboard="Numeric"
+                   Placeholder="Neerslag (mm)" />
+
+            <!-- Automatisch berekend seizoen -->
+            <Label x:Name="SeasonLabel"
+                   TextColor="Gray"
+                   FontAttributes="Italic" />
+
+            <!-- Opslaan -->
+            <Button Text="Opslaan"
+                    Clicked="OnSaveClicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

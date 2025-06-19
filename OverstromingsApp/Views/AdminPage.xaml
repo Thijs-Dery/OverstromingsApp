@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:OverstromingsApp.ViewModels"
     xmlns:models="clr-namespace:OverstromingsApp.Core.Models;assembly=OverstromingsApp.Core"
+    xmlns:helpers="clr-namespace:OverstromingsApp.Helpers"
     x:DataType="vm:UserManagementViewModel"
     Title="Gebruikersbeheer">
 
@@ -17,30 +18,55 @@
                    Completed="OnSearchCompleted" />
 
             <!-- Gebruikerslijst -->
-            <CollectionView ItemsSource="{Binding Users}">
+            <CollectionView ItemsSource="{Binding Users}"
+                            SelectionMode="None">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:User">
-                        <HorizontalStackLayout Spacing="10" Padding="5">
-                            <Label Text="{Binding Email}" WidthRequest="180" VerticalOptions="Center" />
-                            <Picker ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type vm:UserManagementViewModel}}, Path=Rollen}"
-                                    SelectedItem="{Binding Role}"
-                                    WidthRequest="120"
+                        <Grid Padding="5" ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="80" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- E-mail -->
+                            <Label Text="{Binding Email}"
+                                   VerticalOptions="Center" />
+
+                            <!-- Rol-Picker -->
+                            <Picker Grid.Column="1"
+                                    ItemsSource="{x:Static helpers:Roles.All}"
+                                    SelectedItem="{Binding Role, Mode=TwoWay}"
+                                    HorizontalOptions="Fill"
                                     SelectedIndexChanged="OnRoleChanged" />
-                            <Button Text="Verwijder"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UserManagementViewModel}}, Path=DeleteUserCommand}"
+
+                            <!-- Verwijderknop -->
+                            <Button Grid.Column="2"
+                                    Text="Verwijder"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UserManagementViewModel}},
+                                                      Path=DeleteUserCommand}"
                                     CommandParameter="{Binding .}" />
-                        </HorizontalStackLayout>
+                        </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
             <BoxView HeightRequest="1" Color="Gray" Margin="0,10" />
 
-            <!-- Nieuw gebruiker toevoegen -->
-            <Label Text="Nieuwe gebruiker toevoegen" FontAttributes="Bold" />
-            <Entry Placeholder="E-mail" Text="{Binding NieuwEmail}" Keyboard="Email" />
-            <Entry Placeholder="Wachtwoord" Text="{Binding NieuwWachtwoord}" IsPassword="True" />
-            <Button Text="Toevoegen" Command="{Binding AddNewUserCommand}" />
+            <!-- Nieuwe gebruiker -->
+            <Label Text="Nieuwe gebruiker toevoegen"
+                   FontAttributes="Bold" />
+
+            <Entry Placeholder="E-mail"
+                   Keyboard="Email"
+                   Text="{Binding NieuwEmail}" />
+
+            <Entry Placeholder="Wachtwoord"
+                   IsPassword="True"
+                   Text="{Binding NieuwWachtwoord}" />
+
+            <Button Text="Toevoegen"
+                    Command="{Binding AddNewUserCommand}" />
 
         </VerticalStackLayout>
     </ScrollView>

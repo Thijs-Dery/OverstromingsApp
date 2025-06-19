@@ -27,6 +27,7 @@ public static class MauiProgram
         builder.Services.AddTransient<TabelPage>();
         builder.Services.AddTransient<FilterPage>();
         builder.Services.AddTransient<AdminPage>();
+        builder.Services.AddTransient<ToevoegPage>();
 
         // Controllers / services
         builder.Services.AddSingleton<NeerslagController>();
