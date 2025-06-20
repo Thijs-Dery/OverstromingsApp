@@ -156,12 +156,14 @@ public partial class TabelPage : ContentPage,
             Padding = 5,
             Margin = new Thickness(1),
             BackgroundColor = bg,
-            TextColor = Colors.White
+            TextColor = bg == Colors.Transparent ? Colors.Black : Colors.White
         };
+
         Grid.SetRow(lbl, row);
         Grid.SetColumn(lbl, col);
         TableGrid.Children.Add(lbl);
     }
+
 
     private static Color KleurVoorSeizoen(string seizoen, int totaal, int grens) =>
         totaal >= grens + 10 ? Colors.Red :

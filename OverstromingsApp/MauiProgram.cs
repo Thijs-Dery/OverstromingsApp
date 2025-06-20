@@ -13,7 +13,7 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
 
-        var connectionString = "Server=np:\\\\.\\pipe\\LOCALDB#E56D628E\\tsql\\query;Database=OverstromingsDb;Trusted_Connection=True;";
+        var connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=OverstromingsDb;Trusted_Connection=True;";
 
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
